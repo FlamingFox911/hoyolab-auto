@@ -1,6 +1,7 @@
 exports.fetch = async () => {
 	const timeoutDuration = 5 * 60 * 1000; // 5 minutes
 
+	const startTime = Date.now();
 	const res = await app.Got("FakeAgent", {
 		url: "https://www.pcgamesn.com/zenless-zone-zero/codes",
 		responseType: "text",
@@ -11,6 +12,7 @@ exports.fetch = async () => {
 			connect: timeoutDuration
 		}
 	});
+	const endTime = Date.now();
 
 	if (res.statusCode !== 200) {
 		app.Logger.log("PCGamesN", {
@@ -19,6 +21,11 @@ exports.fetch = async () => {
 		});
 
 		return [];
+	} else {
+		const elapsedTime = endTime - startTime;
+		if (elapsedTime > 30 * 1000) { // 30 seconds (from Gots global)
+			app.Logger.warn("PCGamesN", "Fetch successful, but exceeded 30 seconds. Actual time (in seconds): " + (elapsedTime / 1000));
+		}
 	}
 
 	const $ = app.Utils.cheerio(res.body);
