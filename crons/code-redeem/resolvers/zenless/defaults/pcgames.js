@@ -1,8 +1,15 @@
 exports.fetch = async () => {
+	const timeoutDuration = 5 * 60 * 1000; // 5 minutes
+
 	const res = await app.Got("FakeAgent", {
 		url: "https://www.pcgamesn.com/zenless-zone-zero/codes",
 		responseType: "text",
-		throwHttpErrors: false
+		throwHttpErrors: false,
+		timeout: {
+			request: timeoutDuration,
+			response: timeoutDuration,
+			connect: timeoutDuration
+		}
 	});
 
 	if (res.statusCode !== 200) {
